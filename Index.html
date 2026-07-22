@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Gewässerregister — Fischereiverein Schnaittachtal e.V.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light only;
+    --water-deep:#0E3A40;
+    --water-mid:#1F6F78;
+    --water-light:#4FA0A8;
+    --foam:#F2F7F6;
+    --paper:#FCFBF7;
+    --reed:#5E7F45;
+    --reed-soft:#E4ECDC;
+    --clay:#A2503A;
+    --clay-soft:#F1E2DC;
+    --amber:#B08328;
+    --amber-soft:#F3E8D2;
+    --ink:#16262A;
+    --ink-soft:#5A6C6E;
+    --mist:#DCE6E4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--foam);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- Header / river hero ---------- */
+  header.hero{
+    background:linear-gradient(180deg,var(--water-deep) 0%, #0B2E33 100%);
+    color:var(--foam);
+    padding:40px 20px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{max-width:980px;margin:0 auto;position:relative;z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--water-light);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(28px,5vw,44px);
+    line-height:1.05;
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  .hero-sub{
+    color:#B9D4D3;
+    font-size:15px;
+    max-width:560px;
+    margin:0 0 28px;
+    line-height:1.5;
+  }
+  .river-svg{display:block;width:100%;height:90px;margin-top:6px;}
+  .river-path{
+    fill:none;
+    stroke:var(--water-light);
+    stroke-width:2;
+    stroke-dasharray:6 7;
+    opacity:.7;
+    animation:flow 3.2s linear infinite;
+  }
+  @keyframes flow{to{stroke-dashoffset:-130;}}
+  .river-dot{fill:var(--foam);}
+  .river-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    fill:#9FC4C3;
+  }
+
+  .stat-row{
+    display:flex;
+    gap:0;
+    max-width:980px;
+    margin:0 auto;
+    border-top:1px solid rgba(255,255,255,.12);
+    position:relative;
+    z-index:2;
+  }
+  .stat{
+    flex:1;
+    padding:16px 20px 22px;
+    border-right:1px solid rgba(255,255,255,.12);
+  }
+  .stat:last-child{border-right:none;}
+  .stat-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:22px;
+    font-weight:600;
+    color:var(--foam);
+  }
+  .stat-label{
+    font-size:11px;
+    color:#9FC4C3;
+    margin-top:2px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    max-width:980px;
+    margin:0 auto;
+    padding:22px 20px 6px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .seg{
+    display:flex;
+    background:var(--paper);
+    border:1px solid var(--mist);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .seg button{
+    border:none;
+    background:transparent;
+    padding:9px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  .seg button + button{border-left:1px solid var(--mist);}
+  .seg button.active{background:var(--water-mid);color:#fff;}
+  .search-wrap{
+    flex:1;
+    min-width:180px;
+    position:relative;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:10px 14px 10px 34px;
+    border-radius:10px;
+    border:1px solid var(--mist);
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .search-wrap input:focus{outline:2px solid var(--water-mid);outline-offset:1px;}
+  .search-wrap svg{
+    position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    width:14px;height:14px;stroke:var(--ink-soft);
+  }
+  .reset-link{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    background:none;
+    border:none;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:6px 4px;
+  }
+
+  /* ---------- Sections ---------- */
+  main{max-width:980px;margin:0 auto;padding:10px 20px 60px;}
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:600;
+    margin:34px 0 4px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .section-title .count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-weight:400;
+  }
+  .section-rule{height:1px;background:var(--mist);margin:8px 0 18px;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--mist);
+    border-radius:14px;
+    padding:16px 16px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    transition:box-shadow .15s, transform .15s, opacity .2s;
+  }
+  .card.dimmed{opacity:.4;}
+  .card:hover{box-shadow:0 4px 18px rgba(14,58,64,.08);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .card-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:1.2;
+  }
+  .card-lage{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+    line-height:1.35;
+  }
+  .badge{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .badge.open{background:var(--reed-soft);color:var(--reed);}
+  .badge.closed{background:var(--clay-soft);color:var(--clay);}
+
+  .meta-row{
+    display:flex;
+    gap:14px;
+    font-size:12px;
+    color:var(--ink-soft);
+    flex-wrap:wrap;
+  }
+  .meta-row .mono{color:var(--ink);font-weight:600;}
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    background:var(--foam);
+    border:1px solid var(--mist);
+    color:var(--ink-soft);
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .tag.sublet{
+    background:var(--amber-soft);
+    border-color:var(--amber-soft);
+    color:var(--amber);
+    font-weight:600;
+  }
+  .concept-badge{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+    padding:4px 10px;border-radius:20px;margin-bottom:10px;
+  }
+  .concept-badge.a{background:var(--water-mid);color:#fff;}
+  .concept-badge.b{background:var(--amber);color:#fff;}
+  .concept-badge.c{background:var(--reed);color:#fff;}
+  .lease-flag{
+    font-size:11px;
+    color:var(--clay);
+    background:var(--clay-soft);
+    border-radius:8px;
+    padding:5px 8px;
+    line-height:1.35;
+  }
+
+  /* gauge */
+  .gauge-wrap{margin-top:2px;}
+  .gauge-label{
+    display:flex;justify-content:space-between;
+    font-size:11px;color:var(--ink-soft);margin-bottom:3px;
+  }
+  .gauge{
+    height:8px;
+    background:var(--mist);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .gauge-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--water-mid),var(--water-light));
+    border-radius:6px 0 0 6px;
+  }
+
+  .card-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:auto;
+    padding-top:8px;
+    border-top:1px dashed var(--mist);
+  }
+  .footer-label{font-size:12px;color:var(--ink-soft);}
+
+  /* toggle switch */
+  .switch{
+    position:relative;
+    width:42px;height:24px;
+    flex-shrink:0;
+  }
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch .track{
+    position:absolute;inset:0;
+    background:var(--clay);
+    border-radius:24px;
+    cursor:pointer;
+    transition:background .2s;
+  }
+  .switch input:checked + .track{background:var(--reed);}
+  .switch .thumb{
+    position:absolute;top:3px;left:3px;
+    width:18px;height:18px;
+    background:#fff;
+    border-radius:50%;
+    transition:transform .2s;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked ~ .thumb{transform:translateX(18px);}
+  .switch input:focus-visible + .track{outline:2px solid var(--water-mid);outline-offset:2px;}
+
+  .empty{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  footer.note{
+    max-width:980px;margin:0 auto;padding:0 20px 50px;
+    font-size:11px;color:var(--ink-soft);
+  }
+
+  @media (max-width:640px){
+    .stat-row{flex-wrap:wrap;}
+    .stat{flex:1 1 50%;border-bottom:1px solid rgba(255,255,255,.12);}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .river-path{animation:none;}
+  }
+
+  /* ---------- Page tabs ---------- */
+  .tab-bar{
+    position:sticky;top:0;z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--mist);
+    box-shadow:0 2px 10px rgba(14,58,64,.08);
+  }
+  .tab-bar-inner{
+    max-width:980px;margin:0 auto;
+    display:flex;gap:10px;
+    padding:10px 20px;
+  }
+  .tab-btn{
+    flex:1;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 14px;
+    border-radius:10px;
+    border:2px solid var(--mist);
+    background:var(--foam);
+    color:var(--ink-soft);
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .15s, color .15s, border-color .15s, box-shadow .15s;
+  }
+  .tab-btn .tab-icon{font-size:16px;}
+  .tab-btn.active{
+    background:var(--water-mid);
+    border-color:var(--water-mid);
+    color:#fff;
+    box-shadow:0 3px 12px rgba(31,111,120,.35);
+  }
+  .tab-btn:not(.active):hover{border-color:var(--water-light);color:var(--water-deep);}
+  .tab-btn:focus-visible{outline:2px solid var(--water-mid);outline-offset:2px;}
+  @media (max-width:480px){
+    .tab-btn{font-size:12.5px;padding:12px 8px;}
+  }
+
+  /* ---------- Besatzempfehlung page ---------- */
+  #page-besatz{max-width:900px;margin:0 auto;padding:26px 20px 60px;}
+  .legend{
+    display:flex;flex-wrap:wrap;gap:8px 18px;
+    background:var(--paper);border:1px solid var(--mist);border-radius:12px;
+    padding:14px 16px;margin-bottom:28px;font-size:12px;color:var(--ink-soft);
+  }
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .group{margin-bottom:22px;border-radius:14px;overflow:hidden;border:1px solid var(--mist);background:var(--paper);}
+  .group-head{display:flex;align-items:center;gap:12px;padding:14px 18px;}
+  .group-head .arrow{
+    width:30px;height:30px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;color:#fff;font-size:15px;
+  }
+  .group-title{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin:0;}
+  .group-sub{font-size:12px;color:var(--ink-soft);margin:2px 0 0;}
+  .group.up{border-left:4px solid var(--reed);}
+  .group.same{border-left:4px solid var(--water-mid);}
+  .group.watch{border-left:4px solid var(--amber,#B08328);}
+  .group.down{border-left:4px solid var(--clay);}
+  .group.none{border-left:4px solid var(--ink-soft);}
+  .group.up .arrow{background:var(--reed);}
+  .group.same .arrow{background:var(--water-mid);}
+  .group.watch .arrow{background:var(--amber,#B08328);}
+  .group.down .arrow{background:var(--clay);}
+  .group.none .arrow{background:var(--ink-soft);}
+  .items{padding:2px 18px 16px;display:flex;flex-direction:column;gap:0;}
+  .item{display:flex;gap:12px;padding:10px 0;border-top:1px dashed var(--mist);font-size:13px;}
+  .item:first-child{border-top:none;}
+  .item-name{font-weight:600;min-width:150px;flex-shrink:0;}
+  .item-why{color:var(--ink-soft);line-height:1.4;}
+  .closed-block{font-size:12.5px;color:var(--ink-soft);padding:0 18px 16px;line-height:1.5;}
+  .caveat{
+    margin-top:30px;font-size:12px;color:var(--ink-soft);
+    background:var(--paper);border:1px solid var(--mist);border-radius:12px;
+    padding:14px 16px;line-height:1.5;
+  }
+  .caveat b{color:var(--ink);}
+  @media (max-width:520px){
+    .item{flex-direction:column;gap:2px;}
+    .item-name{min-width:0;}
+  }
+
+  /* ---------- Tab bar: scrollable row once there are many tabs ---------- */
+  @media (max-width:760px){
+    .tab-bar-inner{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .tab-bar-inner::-webkit-scrollbar{display:none;}
+    .tab-btn{flex:0 0 auto;white-space:nowrap;}
+  }
+
+  /* ---------- Generic proposal pages (Aufzucht / Au / Letten) ---------- */
+  .prop-page{max-width:900px;margin:0 auto;padding:26px 20px 60px;}
+  .prop-lead{
+    background:var(--paper);border:1px solid var(--mist);border-radius:12px;
+    padding:16px 18px;margin-bottom:24px;font-size:13.5px;line-height:1.6;color:var(--ink-soft) !important;
+  }
+  .prop-section{
+    margin-bottom:22px;
+    background:var(--paper);
+    border:1px solid var(--mist);
+    border-radius:14px;
+    padding:18px 20px 20px;
+    color:var(--ink);
+  }
+  .prop-h{
+    font-family:'Fraunces',serif;font-weight:600;font-size:18px;
+    margin:0 0 10px;color:var(--water-deep) !important;
+  }
+  .prop-h.sub{font-size:14.5px;margin-top:18px;}
+  .prop-p{font-size:13.5px;line-height:1.65;margin:0 0 10px;color:var(--ink) !important;}
+  ul.prop-list{margin:0 0 10px;padding-left:20px;font-size:13.5px;line-height:1.65;color:var(--ink) !important;}
+  ul.prop-list li{margin-bottom:5px;color:var(--ink);}
+
+  table.data-table{width:100%;border-collapse:collapse;margin:8px 0 18px;font-size:13px;background:var(--paper);}
+  table.data-table th{
+    background:var(--water-mid);color:#fff !important;text-align:left;padding:8px 10px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.03em;
+  }
+  table.data-table td{padding:8px 10px;border-bottom:1px solid var(--mist);vertical-align:top;color:var(--ink) !important;background:var(--paper);}
+  table.data-table tr:nth-child(even) td{background:var(--foam);}
+  table.data-table tr:last-child td{border-bottom:none;}
+
+  .prop-note{
+    font-size:12px;color:var(--ink-soft) !important;background:var(--reed-soft);
+    border-left:4px solid var(--reed);border-radius:8px;padding:10px 14px;margin-top:6px;
+  }
+  .prop-note.info{background:var(--foam);border-left-color:var(--water-mid);}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Fischereiverein Schnaittachtal e.V. · Stand 2026</p>
+    <h1 id="pageTitle">Gewässerregister</h1>
+    <p class="hero-sub" id="pageSub">Alle Fließ- und Stehgewässer des Vereins auf einen Blick — mit Freigabestatus, Pachtlage und, wo vorhanden, der Fangquote 2025.</p>
+    <svg class="river-svg" viewBox="0 0 980 90" preserveAspectRatio="none" id="riverSvg">
+      <path class="river-path" d="M0,45 C120,10 220,80 340,45 C460,10 560,80 680,45 C800,10 880,60 980,40"/>
+      <circle class="river-dot" cx="120" cy="27" r="3"></circle>
+      <circle class="river-dot" cx="460" cy="27" r="3"></circle>
+      <circle class="river-dot" cx="800" cy="27" r="3"></circle>
+      <text class="river-label" x="90" y="18">ROLLHOFEN</text>
+      <text class="river-label" x="430" y="18">SCHNAITTACH</text>
+      <text class="river-label" x="775" y="18">MÜNDUNG</text>
+    </svg>
+  </div>
+  <div class="stat-row" id="statRow">
+    <div class="stat"><div class="stat-num mono" id="statCount">–</div><div class="stat-label">Gewässer gesamt</div></div>
+    <div class="stat"><div class="stat-num mono" id="statOpen">–</div><div class="stat-label">aktuell freigegeben</div></div>
+    <div class="stat"><div class="stat-num mono" id="statLen">–</div><div class="stat-label">Fließstrecke (m)</div></div>
+    <div class="stat"><div class="stat-num mono" id="statArea">–</div><div class="stat-label">Stehgewässerfläche (m²)</div></div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab-bar-inner" id="pageNav">
+    <button class="tab-btn active" data-page="register"><span class="tab-icon">🗺️</span>Gewässerregister</button>
+    <button class="tab-btn" data-page="besatz"><span class="tab-icon">🐟</span>Besatzempfehlung 2026</button>
+    <button class="tab-btn" data-page="aufzucht"><span class="tab-icon">🎣</span>Aufzucht Laipersdorf</button>
+    <button class="tab-btn" data-page="au"><span class="tab-icon">🏚️</span>Weiherkette Au</button>
+    <button class="tab-btn" data-page="letten"><span class="tab-icon">📍</span>Letten</button>
+  </div>
+</div>
+
+<div id="page-register">
+<div class="controls">
+  <div class="seg" id="typeSeg">
+    <button data-type="all" class="active">Alle</button>
+    <button data-type="fluss">Fließgewässer</button>
+    <button data-type="see">Stehgewässer</button>
+  </div>
+  <div class="seg" id="statusSeg">
+    <button data-status="all" class="active">Alle</button>
+    <button data-status="open">Freigegeben</button>
+    <button data-status="closed">Gesperrt</button>
+  </div>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Gewässer oder Lage suchen…">
+  </div>
+  <button class="reset-link" id="resetBtn">Freigaben zurücksetzen</button>
+</div>
+
+<main>
+  <div id="flussSection">
+    <div class="section-title">Fließgewässer <span class="count" id="flussCount"></span></div>
+    <div class="section-rule"></div>
+    <div class="grid" id="flussGrid"></div>
+  </div>
+  <div id="seeSection">
+    <div class="section-title">Stehende Gewässer <span class="count" id="seeCount"></span></div>
+    <div class="section-rule"></div>
+    <div class="grid" id="seeGrid"></div>
+  </div>
+  <div class="empty" id="emptyMsg" style="display:none;">Keine Gewässer gefunden — Filter oder Suche anpassen.</div>
+</main>
+
+<footer class="note">
+  Freigabestatus ist interaktiv und wird direkt in diesem Browser gespeichert (localStorage) — nicht mit anderen Mitgliedern geteilt und nicht geräteübergreifend. Gedacht als Werkzeug, um Änderungen durchzuspielen, bevor sie offiziell im Vereinsregister übernommen werden. Fangquote 2025 = Fänge ÷ Besuche, Datengrundlage: Auswertung der Papier-Fangbücher.
+</footer>
+</div><!-- /page-register -->
+
+<div id="page-besatz" style="display:none;">
+  <div class="legend">
+    <span><span class="dot" style="background:var(--reed);"></span>Besatz erhöhen</span>
+    <span><span class="dot" style="background:var(--water-mid);"></span>Besatz beibehalten</span>
+    <span><span class="dot" style="background:var(--amber);"></span>Beobachten / zu wenig Daten</span>
+    <span><span class="dot" style="background:var(--clay);"></span>Reduzieren / Ursache klären</span>
+    <span><span class="dot" style="background:var(--ink-soft);"></span>Kein Besatz nötig</span>
+  </div>
+
+  <div class="group up">
+    <div class="group-head">
+      <div class="arrow">↑</div>
+      <div>
+        <p class="group-title">Erhöhen</p>
+        <p class="group-sub">Hoher Angeldruck bzw. Ungleichgewicht im Artenmix</p>
+      </div>
+    </div>
+    <div class="items">
+      <div class="item"><span class="item-name">Bürgerweiher</span><span class="item-why">Höchster Angeldruck im Verein (213 Besuche) bei moderater Quote — Karpfen/Zander leicht erhöhen. Gastangelgewässer: künftig mit ausreichend großen Fischen nachbesetzen; Raubfischentnahme auf 2 Stück begrenzt, um die vereinseigenen Raubfischangler zu schonen.</span></div>
+      <div class="item"><span class="item-name">Höllweiher</span><span class="item-why">Raubfischlastig (Hecht, Waller), wenig Friedfisch, Fischbestand insgesamt schwach — Karpfen/Schleie erhöhen und mit ausreichend großen Fischen nachbesetzen. Gastangelgewässer: Raubfischentnahme ebenfalls auf 2 Stück begrenzt.</span></div>
+      <div class="item"><span class="item-name">Höflas 1</span><span class="item-why">Niedrige Quote bei ordentlichem Angeldruck — Karpfenbesatz leicht erhöhen.</span></div>
+    </div>
+  </div>
+
+  <div class="group same">
+    <div class="group-head">
+      <div class="arrow">＝</div>
+      <div>
+        <p class="group-title">Beibehalten</p>
+        <p class="group-sub">Gut angenommen, Besatz passt zur Nutzung</p>
+      </div>
+    </div>
+    <div class="items">
+      <div class="item"><span class="item-name">Schnaittach</span><span class="item-why">Sehr gut angenommen (73% Quote) — Forellenbesatz auf aktuellem Niveau lassen.</span></div>
+      <div class="item"><span class="item-name">L 6</span><span class="item-why">Sehr gute Quote (65%) — beibehalten, bei steigender Nachfrage leicht erhöhen.</span></div>
+      <div class="item"><span class="item-name">L 9 Hirtenweiher</span><span class="item-why">Gut ausbalanciert — Besatz beibehalten.</span></div>
+      <div class="item"><span class="item-name">Höflas 2</span><span class="item-why">Gute Quote bei diversem Artenspektrum — beibehalten.</span></div>
+      <div class="item"><span class="item-name">Bartl-Weiher</span><span class="item-why">Solide Quote, Karpfen dominant — beibehalten.</span></div>
+      <div class="item"><span class="item-name">L 3</span><span class="item-why">Freigegeben, moderate Quote — Besatz beibehalten und Entwicklung beobachten.</span></div>
+    </div>
+  </div>
+
+  <div class="group watch">
+    <div class="group-head">
+      <div class="arrow">?</div>
+      <div>
+        <p class="group-title">Gering halten — Pachtende 2028</p>
+        <p class="group-sub">Verlängerung der Au-Pacht gilt als unwahrscheinlich</p>
+      </div>
+    </div>
+    <div class="items">
+      <div class="item"><span class="item-name">Au 1, Au 3, Au 5</span><span class="item-why">Bestand gilt als ausreichend bis zum Pachtende — kaum Neubesatz nötig, keine langfristige Investition.</span></div>
+    </div>
+  </div>
+
+  <div class="group watch">
+    <div class="group-head">
+      <div class="arrow">👁</div>
+      <div>
+        <p class="group-title">Weiter beobachten</p>
+        <p class="group-sub">Zu wenig Daten für eine belastbare Aussage</p>
+      </div>
+    </div>
+    <div class="items">
+      <div class="item"><span class="item-name">Sittenbach</span><span class="item-why">Hohe Quote, aber nur 8 Besuche — Besatz beibehalten, 2026 beobachten.</span></div>
+      <div class="item"><span class="item-name">Osternohe</span><span class="item-why">100% Quote, aber nur 10 Besuche — vor Rückschlüssen weitere Jahresdaten abwarten.</span></div>
+    </div>
+  </div>
+
+  <div class="group down">
+    <div class="group-head">
+      <div class="arrow">↓</div>
+      <div>
+        <p class="group-title">Reduzieren / Ursache klären</p>
+        <p class="group-sub">Besatz trifft auf kaum Angeldruck</p>
+      </div>
+    </div>
+    <div class="items">
+      <div class="item"><span class="item-name">Kersbach</span><span class="item-why">Praktisch nicht befischt trotz Forellenbesatz — Zugänglichkeit/Bekanntheit klären, Besatz bis dahin reduzieren.</span></div>
+      <div class="item"><span class="item-name">Röttenbach</span><span class="item-why">Gleiches Bild wie Kersbach — Ursache klären, Besatz reduzieren.</span></div>
+    </div>
+  </div>
+
+  <div class="group none">
+    <div class="group-head">
+      <div class="arrow">—</div>
+      <div>
+        <p class="group-title">Kein Besatz nötig</p>
+        <p class="group-sub">Nicht zum Angeln freigegeben oder nicht befischbar</p>
+      </div>
+    </div>
+    <div class="closed-block">
+      Gründlingsbach · Au 2, Au 4, Au 6, Au 7, Au 8 · L 1, L 2, L 5, L 7, L 8 · Untersdorf · Letten-Weiher · Höflas 3, Höflas 4 · beide Hofwiesenweiher (unterverpachtet)
+    </div>
+  </div>
+
+  <div class="caveat">
+    <b>Einschränkung:</b> Basis ist ein einzelnes Beobachtungsjahr (2025, Papier-Fangbücher) mit reinen Stückzahlen — ohne Gewicht, Größenklassen oder Nullfänge. Als Ausgangspunkt für die Vorstandsdiskussion gedacht, nicht als abschließende Entscheidung. Mit den Angelroute-Daten der Folgejahre lässt sich das jährlich verfeinern.
+  </div>
+</div><!-- /page-besatz -->
+
+<div id="page-aufzucht" class="prop-page" style="display:none;">
+  <div class="prop-lead">
+    Die Weiherkette Laipersdorf (L1, L2, L3, L6, L7, L8, L9, Untersdorf) wird künftig klar in zwei Funktionsbereiche geteilt: einen Aufzuchtbereich zur Fischproduktion und einen Angelbereich für die Mitglieder. Für den Aufzuchtbereich werden im Folgenden zwei Konzepte gegenübergestellt — das ursprüngliche Vereinsmodell (Konzept A) und ein Modell nach klassischer Fachempfehlung mit jährlichem Umsetzen (Konzept B) — sowie ergänzend die Option, fangfähige Karpfen direkt zuzukaufen.
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Bisherige Nutzung</h3>
+    <ul class="prop-list">
+      <li>L1, L2, L7, L8 — Aufzucht bzw. Fütterung von Jungfischen</li>
+      <li>L3, L6, L9 — zum Angeln freigegeben</li>
+      <li>Untersdorf — ungenutzt</li>
+    </ul>
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Neue Nutzung</h3>
+    <p class="prop-p">L1, L2, L3, L7 und L8 werden künftig ausschließlich für ein rollierendes Aufzuchtprogramm genutzt.</p>
+    <p class="prop-p">L3 wird aus dem Angelbetrieb genommen: Dammprobleme schränken die Angelnutzung ein — im Aufzuchtprogramm ist das Gewässer besser aufgehoben.</p>
+    <p class="prop-p">Als Ersatz für L3 wird Untersdorf zum Angeln freigegeben; die Gewässerstruktur dort eignet sich ohnehin nur mäßig zum Abfischen.</p>
+    <p class="prop-p">L6 und L9 bleiben unverändert zum Angeln freigegeben.</p>
+  </div>
+
+  <div class="prop-section">
+    <span class="concept-badge a">Konzept A</span>
+    <h3 class="prop-h">Eigenes Rotationsmodell — ohne jährliches Umsetzen</h3>
+    <p class="prop-p">Die Fische bleiben durchgehend 18 Monate im selben Teichpaar; es findet kein Umsetzen zwischen unterschiedlich großen Teichen statt. Das reduziert den Arbeitsaufwand deutlich, weicht aber vom klassischen dreisömmerigen Umtrieb ab (siehe Konzept B).</p>
+    <p class="prop-p"><strong>Ziel:</strong> ein regelmäßiger, planbarer Fischbestand, mit dem die Angelgewässer in angemessenem Umfang nachbesetzt werden können.</p>
+    <ul class="prop-list">
+      <li>Jährlich im Oktober: Auswertung der Fanglisten, danach gezielter Nachbesatz — entnommene Menge zzgl. 10–20 % Puffer (ohne Weißfisch, da nicht messbar).</li>
+      <li>Fischbesatz in den Aufzuchtweihern richtet sich nach der Gewässergröße; die Gewässerwarte ermitteln die maximal sinnvolle Besatzdichte je Hektar.</li>
+      <li>Fischmix in den Aufzuchtweihern: Weißfisch und Karpfen.</li>
+      <li>Fütterung mit proteinreichem Sojaextraktionsschrot — ausschließlich in den Aufzuchtweihern; die Angelweiher bleiben bei Brot und Weizen.</li>
+    </ul>
+
+    <h4 class="prop-h sub">Gewässergrößen</h4>
+    <table class="data-table">
+      <tr><th>Gewässer</th><th>Fläche</th></tr>
+      <tr><td>L1</td><td>0,14 ha</td></tr>
+      <tr><td>L2</td><td>0,15 ha</td></tr>
+      <tr><td>L3</td><td>0,28 ha</td></tr>
+      <tr><td>L7</td><td>0,34 ha</td></tr>
+      <tr><td>L8</td><td>0,53 ha</td></tr>
+    </table>
+
+    <h4 class="prop-h sub">Aufteilung und Rotationspaare</h4>
+    <p class="prop-p">L1, L2, L3 und L7 werden als gemeinsamer Weißfisch- und Karpfenbestand geführt. L8 dient als reiner Barschweiher (ca. 50 % Barschanteil) — der Abfischzeitpunkt wird mit den Gewässerwarten abgestimmt.</p>
+    <p class="prop-p">Zur Rotation bilden L1 und L7 ein Paar, ebenso L2 und L3. Die Fische verbleiben jeweils 18 Monate in den Aufzuchtweihern und werden im Oktober abgefischt, sodass sie im Folgefrühjahr als K3 fangfähig sein sollten. Ab dem laufenden Rotationsbetrieb wird jeweils K1 und Weißfisch zugekauft — Ausnahme ist nur das erste Jahr.</p>
+
+    <h4 class="prop-h sub">Ablaufplan (Startphase)</h4>
+    <table class="data-table">
+      <tr><th>Zeitpunkt</th><th>Maßnahme</th></tr>
+      <tr><td>Jahr 0 – Oktober</td><td>Alle Weiher der Kette werden abgefischt; die Fische werden in die Angelgewässer eingesetzt — besonderes Augenmerk auf die Gastangelgewässer Bürgerweiher und Höllweiher (Simonshofen).</td></tr>
+      <tr><td>Jahr 1 – Frühjahr</td><td>L1 und L7 werden mit K1 und Weißfisch besetzt; L2 und L3 werden mit K2 und Weißfisch besetzt.</td></tr>
+      <tr><td>Jahr 1 – Oktober</td><td>Abfischen von L2 und L3.</td></tr>
+      <tr><td>Jahr 2 – Frühjahr</td><td>L2 und L3 werden mit K1 und Weißfisch besetzt.</td></tr>
+      <tr><td>Jahr 2 – Oktober</td><td>Abfischen von L1 und L7.</td></tr>
+    </table>
+    <p class="prop-p">Ab Jahr 2 läuft dieses Schema für die vier Weiher dauerhaft im Rotationsprinzip weiter und liefert dem Verein jedes Jahr einen ausreichenden, planbaren Fischbestand.</p>
+
+    <h4 class="prop-h sub">Zieldichte je Teich (K3-Äquivalent, mit 15 % Sicherheitspuffer)</h4>
+    <table class="data-table">
+      <tr><th>Teich</th><th>Fläche</th><th>Ziel (500/ha)</th><th>mit Puffer (≈85 %)</th></tr>
+      <tr><td>L1</td><td>0,14 ha</td><td>70 Stück</td><td>~60 Stück</td></tr>
+      <tr><td>L7</td><td>0,34 ha</td><td>170 Stück</td><td>~145 Stück</td></tr>
+      <tr><td>L2</td><td>0,15 ha</td><td>75 Stück</td><td>~64 Stück</td></tr>
+      <tr><td>L3</td><td>0,28 ha</td><td>140 Stück</td><td>~119 Stück</td></tr>
+    </table>
+    <p class="prop-p">Wichtig: Da die Fische 18 Monate ohne Umsetzen im selben Teich bleiben und dort bis K3-Größe (ca. 1,3–1,4 kg) heranwachsen, muss sich die <em>Ausgangsdichte</em> bereits an der für K3 üblichen Zieldichte orientieren (ca. 400–570 Stück/ha, je nach KULAP-Obergrenze Region I bzw. Praxiswerten Oberpfalz) — nicht an klassischen K1-Dichten, die für Teiche mit Umsetzen gelten und sonst zu Überbesatz führen würden.</p>
+    <div class="prop-note">Praktischer Vorteil: Sämtliches Abfischmaterial kann zentral in Laipersdorf gelagert werden. Kein jährliches Sortieren oder Umsetzen zwischen Teichen nötig.</div>
+  </div>
+
+  <div class="prop-section">
+    <span class="concept-badge b">Konzept B</span>
+    <h3 class="prop-h">Empfehlungskonformes Modell — klassischer 3-Stufen-Umtrieb mit jährlichem Umsetzen</h3>
+    <p class="prop-p">Dieses Modell folgt dem traditionellen, in Bayern etablierten "dreisömmerigen Umtrieb": Jede Altersstufe (K1, K2, K3) wächst in einem eigenen, passend dimensionierten Teich heran. Jeden Herbst wird abgefischt, sortiert und die überlebenden Fische wandern eine Stufe weiter in den nächsten Teich; die K1-Teiche werden jedes Frühjahr neu mit zugekauften Setzlingen befüllt.</p>
+
+    <h4 class="prop-h sub">Teichzuordnung</h4>
+    <table class="data-table">
+      <tr><th>Teich</th><th>Fläche</th><th>Funktion</th></tr>
+      <tr><td>L1 + L2</td><td>0,29 ha</td><td>K1-Teiche (Setzlinge, jährlich neu zugekauft)</td></tr>
+      <tr><td>L3</td><td>0,28 ha</td><td>K2-Teich (übernimmt Überlebende aus L1/L2)</td></tr>
+      <tr><td>L7</td><td>0,34 ha</td><td>K3-Teich (übernimmt Überlebende aus L3, Endabfischung)</td></tr>
+    </table>
+
+    <h4 class="prop-h sub">Ablaufplan (eingeschwungener Betrieb, ab Jahr 3)</h4>
+    <table class="data-table">
+      <tr><th>Zeitpunkt</th><th>Maßnahme</th></tr>
+      <tr><td>Frühjahr</td><td>L1+L2 werden mit zugekauften K1 besetzt (ca. 600 Stück/ha, KULAP-Obergrenze Region I); L3 erhält die im Vorjahr in L1/L2 herangewachsenen K1 als K2-Besatz; L7 erhält die im Vorjahr in L3 herangewachsenen K2 als K3-Besatz.</td></tr>
+      <tr><td>Herbst</td><td>Alle drei Stufen werden abgefischt und sortiert. L7s K3 gehen als fangfähige Fische in die Angelgewässer. Die Überlebenden aus L1/L2 und L3 werden für das folgende Frühjahr bereitgestellt.</td></tr>
+    </table>
+
+    <h4 class="prop-h sub">Rechenbeispiel mit den Laipersdorfer Teichgrößen</h4>
+    <table class="data-table">
+      <tr><th>Schritt</th><th>Rechnung</th><th>Ergebnis</th></tr>
+      <tr><td>K2-Besatz L3 (KULAP-Obergrenze 600/ha)</td><td>0,28 ha × 600/ha</td><td>168 Stück</td></tr>
+      <tr><td>K3-Ertrag L7 (15 % Verlust K2→K3)</td><td>168 × 0,85</td><td>≈ 143 Stück (≈ 420/ha in L7)</td></tr>
+      <tr><td>nötiger K1-Besatz L1+L2 (30 % Verlust K1→K2)</td><td>168 ÷ 0,70</td><td>≈ 240 Stück (≈ 828/ha)</td></tr>
+    </table>
+    <p class="prop-p"><strong>Engpass-Hinweis:</strong> Die gesetzliche Obergrenze für K1 in Region I läge bei 3.000 Stück/ha — in L1+L2 also bis zu 870 Stück. Nach Verlusten blieben davon ca. 609 Überlebende übrig, doch L3 als K2-Teich kann bei zulässiger Dichte nur rund 168 davon aufnehmen. L1 und L2 sind für ein sauberes 3-Stufen-System also deutlich überdimensioniert im Verhältnis zu L3 — der Engpass sitzt bei L3. Der Überschuss müsste entweder verkauft (z. B. als Satzfisch an andere Teichwirte), direkt als Jungbesatz in Angelgewässer gegeben, oder die K1-Dichte von vornherein auf den tatsächlichen Bedarf gedrosselt werden.</p>
+    <div class="prop-note info">Hinweis Förderfähigkeit: Bei rein extensiver Bewirtschaftung nach diesen Obergrenzen wäre das KULAP-Programm "Extensive Teichwirtschaft" (350 €/ha Zuschuss) grundsätzlich denkbar. Sojaextraktionsschrot als Zufutter erfüllt jedoch nicht die Förderauflagen (max. 16 % Rohprotein, nur unverarbeitete Futtermittel) — die Zufütterung mit Sojaschrot schließt die Förderung in beiden Konzepten aus.</div>
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Gegenüberstellung: Ausbeute &amp; Aufwand</h3>
+    <table class="data-table">
+      <tr><th>Kriterium</th><th>Konzept A (ohne Umsetzen)</th><th>Konzept B (jährliches Umsetzen)</th></tr>
+      <tr><td>Zyklusdauer je Fisch</td><td>18 Monate, ein Teich</td><td>3 Jahre, drei Teiche</td></tr>
+      <tr><td>Jährlicher K3-Ertrag (eingeschwungen)</td><td>≈ 360–370 kg/Jahr (0,91 ha gesamt)</td><td>≈ 180–220 kg/Jahr (begrenzt durch Engpass L3)</td></tr>
+      <tr><td>Abfisch-/Umsetzvorgänge pro Jahr</td><td>1 Termin pro Teichpaar (Ernte, abwechselnd)</td><td>3 Termine (jede Stufe wird jährlich abgefischt, sortiert, umgesetzt)</td></tr>
+      <tr><td>Arbeitsaufwand</td><td>gering — nur Besatz und Endabfischung</td><td>deutlich höher — jährliches Sortieren, Transport zwischen Teichen, Logistik für 3 Kohorten gleichzeitig</td></tr>
+      <tr><td>Flächennutzung</td><td>alle 4 Teiche gleichwertig genutzt</td><td>L1/L2 strukturell überdimensioniert, Überschuss ungenutzt oder zusätzlich zu vermarkten</td></tr>
+      <tr><td>Risiko/Puffer</td><td>ein langer Zeitraum ohne Kontrolle je Kohorte (18 Monate Prädatoren-/Sauerstoffrisiko am Stück)</td><td>jährliche Kontrolle beim Umsetzen, aber auch mehr Stress/Handling-Verluste für die Fische</td></tr>
+      <tr><td>Förderfähigkeit (KULAP)</td><td>ausgeschlossen durch Sojaschrot-Fütterung</td><td>ausgeschlossen durch Sojaschrot-Fütterung</td></tr>
+    </table>
+    <p class="prop-p">Mit den konkreten Laipersdorfer Teichgrößen liefert Konzept A hier sowohl den höheren Jahresertrag als auch den geringeren Arbeitsaufwand — weil L3 als K2-Teich im klassischen 3-Stufen-Modell zu klein ist, um das Potenzial von L1+L2 als K1-Teiche auszuschöpfen. Konzept B gewinnt nur dann an Attraktivität, wenn der L1/L2-Überschuss zusätzlich vermarktet wird (siehe Engpass-Hinweis oben) oder wenn eines der Rotationspaare vergrößert werden könnte.</p>
+  </div>
+
+  <div class="prop-section">
+    <span class="concept-badge c">Ergänzende Option</span>
+    <h3 class="prop-h">Zukauf fangfähiger Karpfen statt Eigenaufzucht</h3>
+    <p class="prop-p">Statt (oder zusätzlich zu) Konzept A/B können fangfähige K3-Karpfen direkt bei einem Teichwirt zugekauft werden.</p>
+    <table class="data-table">
+      <tr><th>Kriterium</th><th>Zukauf</th><th>Eigenaufzucht (A oder B)</th></tr>
+      <tr><td>Kosten</td><td>ca. 3,50–5,50 €/kg Lebendgewicht ab Hof (Richtwert nach Erzeugerpreisen 2022–2025) — bei 1,3 kg/Fisch ca. 4,50–7,20 €/Fisch</td><td>überwiegend Futter- und Setzlingskosten, dafür ehrenamtliche Arbeitszeit über 1,5–3 Jahre</td></tr>
+      <tr><td>Planbarkeit</td><td>sofort verfügbar, Menge flexibel je nach Kassenlage</td><td>Vorlauf von 1,5 (Konzept A) bis 3 Jahren (Konzept B)</td></tr>
+      <tr><td>Verlustrisiko</td><td>trägt der Verkäufer bis zur Übergabe</td><td>trägt der Verein während der gesamten Aufzuchtzeit (Prädatoren, Sauerstoff, Krankheit)</td></tr>
+      <tr><td>Arbeitsaufwand</td><td>nur Transport und Einsetzen am Liefertag</td><td>laufende Teichpflege, Fütterung, Kontrolle über Monate/Jahre</td></tr>
+      <tr><td>Flächenbindung</td><td>keine</td><td>bindet Teichfläche und Vereinskapazität langfristig</td></tr>
+    </table>
+    <p class="prop-p">In der Praxis wird häufig kombiniert: Eigenaufzucht deckt die Grundversorgung, gezielter Zukauf gleicht Ausfälle (z. B. nach Prädatoren-Verlusten) aus oder deckt kurzfristige Spitzenbedarfe vor Vereinsterminen ab. Belastbare aktuelle Preise sollten vor einer Entscheidung direkt bei regionalen Teichwirten (z. B. über den Fischerzeugerring Mittelfranken) eingeholt werden — die genannten Werte sind Richtwerte, keine verbindlichen Angebote.</p>
+  </div>
+</div><!-- /page-aufzucht -->
+
+<div id="page-au" class="prop-page" style="display:none;">
+  <div class="prop-lead">
+    Eine Weiterführung der Au-Gewässer ist aus wirtschaftlicher Sicht nicht mehr vertretbar. Ziel dieses Vorschlags ist eine geordnete Abwicklung des Au-Geländes.
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Bisherige Nutzung</h3>
+    <ul class="prop-list">
+      <li>Angelgewässer: Au 1, Au 3, Au 5</li>
+      <li>Aufzucht: L2 (für Zander)</li>
+      <li>Ungenutzt: Au 4 sowie der Weiher hinter Au 5</li>
+    </ul>
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Vorschlag</h3>
+    <p class="prop-p">Die Au-Gewässer binden auf Dauer mehr Ressourcen, als der Verein künftig aufbringen kann. Sie sollten daher nach und nach abgefischt und nicht mehr nachbesetzt werden.</p>
+    <p class="prop-p">Am dringlichsten: Au 3 abfischen — der Fischbestand in Simonshofen ist derzeit schwach und sollte damit aufgestockt werden.</p>
+    <p class="prop-p">Die Halle auf dem Au-Gelände sollte zeitnah entrümpelt werden; vorhandene Geräte und Materialien werden nach Laipersdorf verlagert. Der BAW ist von diesen Maßnahmen nicht betroffen.</p>
+  </div>
+</div><!-- /page-au -->
+
+<div id="page-letten" class="prop-page" style="display:none;">
+  <div class="prop-lead">
+    Da die Au-Weiher künftig entfallen, soll der Letten-Weiher als Ersatzgewässer für die Mitglieder freigegeben werden.
+  </div>
+
+  <div class="prop-section">
+    <h3 class="prop-h">Vorschlag</h3>
+    <p class="prop-p">Der Letten-Weiher wird für die Mitglieder zum Angeln freigegeben. Der sinnvolle Besatzumfang ist mit den Gewässerwarten abzustimmen.</p>
+    <p class="prop-p">Am Straßenrand soll zusätzlich ein aufgeschotterter Parkplatz entstehen, da der Untergrund bei Regen derzeit zu weich wird.</p>
+    <div class="prop-note info">Aktuelle Eckdaten laut Gewässerregister: 7.249 m² · Pacht bis 31.12.2033 · aktuell noch nicht zum Angeln freigegeben.</div>
+  </div>
+</div><!-- /page-letten -->
+
+<script>
+const DATA = {
+  fluss: [
+    {id:"schnaittach", name:"Schnaittach", lage:"nördl. Ortsschild Rollhofen bis Mündung", metric:6000, unit:"m", besitz:"Eigentum", pacht:null, freigegeben:true, art:"Forelle", fang:{b:154,f:113,q:.734}},
+    {id:"kersbach", name:"Kersbach", lage:"St. 2236 (Rollhofen–Speikern) bis Mündung", metric:800, unit:"m", besitz:"Eigentum", pacht:null, freigegeben:true, art:"Forelle", fang:{b:1,f:0,q:0}},
+    {id:"roettenbach", name:"Röttenbach", lage:"Quellen bis Gemeindegrenze Schnaittach/Neunkirchen", metric:7000, unit:"m", besitz:"Eigentum", pacht:null, freigegeben:true, art:"Forelle", fang:{b:3,f:0,q:0}},
+    {id:"gruendlingsbach", name:"Gründlingsbach", lage:"Quellen bis Gemeindegrenze Schnaittach/Neunkirchen", metric:2200, unit:"m", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null},
+    {id:"osternohe", name:"Osternohe", lage:"Quellen bis ca. 200 m vor Poppenhof", metric:3500, unit:"m", besitz:"Pacht", pacht:"31.12.2028", freigegeben:true, art:"Forelle", fang:{b:10,f:10,q:1}},
+    {id:"sittenbach", name:"Sittenbach", lage:"ca. 500 m nördl. Aspershofen bis Brücke Unterkrumbach", metric:2500, unit:"m", besitz:"Pacht", pacht:"31.12.2029", freigegeben:true, art:"Forelle", fang:{b:8,f:5,q:.625}},
+  ],
+  see: [
+    {id:"bartl", name:"Bartl-Weiher", lage:"Schnaittach Au-Gelände", metric:15416, unit:"m²", besitz:"Eigentum", pacht:null, freigegeben:true, art:"Karpfen", fang:{b:59,f:19,q:.322}},
+    {id:"au1", name:"Au 1 Teufelsw.", lage:"Schnaittach Au-Gelände", metric:1412, unit:"m²", besitz:"Pacht", pacht:"31.10.2028", freigegeben:true, art:"Karpfen", fang:{b:7,f:1,q:.14}, leaseRisk:true},
+    {id:"au2", name:"Au 2", lage:"Schnaittach Au-Gelände", metric:4496, unit:"m²", besitz:"Pacht", pacht:"31.10.2028", freigegeben:false, art:"—", fang:null, leaseRisk:true},
+    {id:"au3", name:"Au 3", lage:"Schnaittach Au-Gelände", metric:21098, unit:"m²", besitz:"Pacht", pacht:"31.10.2028", freigegeben:true, art:"Karpfen", fang:{b:183,f:40,q:.219}, leaseRisk:true},
+    {id:"au4", name:"Au 4 Badweiher", lage:"Schnaittach Au-Gelände", metric:1332, unit:"m²", besitz:"Pacht", pacht:"31.10.2028", freigegeben:false, art:"—", fang:null, leaseRisk:true},
+    {id:"au5", name:"Au 5 Grimm-W.", lage:"Schnaittach Au-Gelände", metric:3782, unit:"m²", besitz:"Pacht", pacht:"31.10.2028", freigegeben:true, art:"Karpfen", fang:{b:126,f:32,q:.254}, leaseRisk:true},
+    {id:"au6", name:"Au 6", lage:"Schnaittach Au-Gelände", metric:386, unit:"m²", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null, leaseRisk:true},
+    {id:"au7", name:"Au 7", lage:"Schnaittach Au-Gelände", metric:1062, unit:"m²", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null, leaseRisk:true},
+    {id:"au8", name:"Au 8", lage:"Schnaittach Au-Gelände", metric:150, unit:"m²", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null, leaseRisk:true},
+    {id:"buergerweiher", name:"Bürgerweiher", lage:"Schnaittach im Ortskern", metric:14717, unit:"m²", besitz:"Pacht", pacht:"31.10.2030", freigegeben:true, art:"Karpfen", fang:{b:213,f:58,q:.272}},
+    {id:"l1", name:"L 1", lage:"Schnaittach - OT Laipersdorf", metric:1431, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"l2", name:"L 2", lage:"Schnaittach - OT Laipersdorf", metric:1505, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"l3", name:"L 3", lage:"Schnaittach - OT Laipersdorf", metric:2805, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Graskarpfen", fang:{b:36,f:7,q:.194}},
+    {id:"l5", name:"L 5 Schützweiher", lage:"Schnaittach - OT Laipersdorf", metric:919, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"l6", name:"L 6", lage:"Schnaittach - OT Laipersdorf", metric:4842, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Karpfen", fang:{b:37,f:24,q:.649}},
+    {id:"l7", name:"L 7 unt. Waldweiher", lage:"Schnaittach - OT Laipersdorf", metric:3390, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"l8", name:"L 8 ob. Waldweiher", lage:"Schnaittach - OT Laipersdorf", metric:5312, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"l9", name:"L 9 Hirtenweiher", lage:"Schnaittach - OT Laipersdorf", metric:5554, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Karpfen", fang:{b:83,f:41,q:.494}},
+    {id:"untersdorf", name:"Untersdorf", lage:"Schnaittach - OT Untersdorf", metric:5763, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"lettenweiher", name:"Letten-Weiher", lage:"Lauf - OT Letten", metric:7249, unit:"m²", besitz:"Pacht", pacht:"31.12.2033", freigegeben:false, art:"—", fang:null},
+    {id:"hoeflas1", name:"Höflas 1 Sandweiher", lage:"Lauf - OT Höflas", metric:8258, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Karpfen", fang:{b:69,f:18,q:.261}},
+    {id:"hoeflas2", name:"Höflas 2", lage:"Lauf - OT Höflas", metric:4428, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Karpfen", fang:{b:75,f:33,q:.44}},
+    {id:"hoeflas3", name:"Höflas 3", lage:"Lauf - OT Höflas", metric:577, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"hoeflas4", name:"Höflas 4", lage:"Lauf - OT Höflas", metric:437, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:false, art:"—", fang:null},
+    {id:"hoellweiher", name:"Höllweiher", lage:"Simonshofen", metric:27161, unit:"m²", besitz:"Pacht", pacht:"31.12.2043", freigegeben:true, art:"Hecht", fang:{b:70,f:16,q:.229}},
+    {id:"hofwiesen_ob", name:"Hofwiesenweiher (oberer)", lage:"Simonshofen, rechteckiger Weiher", metric:1500, unit:"m²", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null, unterverpachtet:true},
+    {id:"hofwiesen_unt", name:"Hofwiesenweiher (unterer)", lage:"Simonshofen, dreieckiger Weiher", metric:600, unit:"m²", besitz:"Pacht", pacht:"31.12.2028", freigegeben:false, art:"—", fang:null, unterverpachtet:true},
+  ]
+};
+
+const STORAGE_KEY = "gewaesser-freigabe-overrides";
+let overrides = {};
+let filters = { type:"all", status:"all", q:"" };
+
+function fmt(n){ return n.toLocaleString("de-DE"); }
+
+function isOpen(item){
+  return overrides.hasOwnProperty(item.id) ? overrides[item.id] : item.freigegeben;
+}
+
+async function loadOverrides(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) overrides = JSON.parse(raw);
+  }catch(e){ overrides = {}; }
+}
+
+async function saveOverrides(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+  }catch(e){ console.error("Speichern fehlgeschlagen", e); }
+}
+
+function cardHTML(item){
+  const open = isOpen(item);
+  const gaugeHTML = item.fang ? `
+    <div class="gauge-wrap">
+      <div class="gauge-label"><span>Fangquote 2025</span><span class="mono">${Math.round(item.fang.q*100)}%</span></div>
+      <div class="gauge"><div class="gauge-fill" style="width:${Math.round(item.fang.q*100)}%"></div></div>
+      <div class="gauge-label" style="margin-top:4px;"><span>${item.fang.b} Besuche</span><span>${item.fang.f} Fänge</span></div>
+    </div>` : `<div class="gauge-label" style="opacity:.6;">Keine Fangdaten 2025</div>`;
+
+  const leaseHTML = item.leaseRisk ? `<div class="lease-flag">Pacht läuft 2028 aus — Verlängerung ungewiss</div>` : "";
+
+  return `
+    <div class="card ${open ? "" : "dimmed"}" data-id="${item.id}">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${item.name}</div>
+          <div class="card-lage">${item.lage}</div>
+        </div>
+        <span class="badge ${open ? "open" : "closed"}">${open ? "Frei" : "Gesperrt"}</span>
+      </div>
+      <div class="meta-row">
+        <span class="mono">${fmt(item.metric)} ${item.unit}</span>
+        <span class="tag">${item.besitz}${item.pacht ? " · bis " + item.pacht : ""}</span>
+        ${item.art !== "—" ? `<span class="tag">${item.art}</span>` : ""}
+        ${item.unterverpachtet ? `<span class="tag sublet">Unterverpachtet</span>` : ""}
+      </div>
+      ${leaseHTML}
+      ${gaugeHTML}
+      <div class="card-footer">
+        <span class="footer-label">Zum Angeln freigegeben</span>
+        <label class="switch">
+          <input type="checkbox" ${open ? "checked" : ""} data-id="${item.id}">
+          <span class="track"></span>
+          <span class="thumb"></span>
+        </label>
+      </div>
+    </div>`;
+}
+
+function matches(item, isFluss){
+  if(filters.type === "fluss" && !isFluss) return false;
+  if(filters.type === "see" && isFluss) return false;
+  const open = isOpen(item);
+  if(filters.status === "open" && !open) return false;
+  if(filters.status === "closed" && open) return false;
+  if(filters.q){
+    const q = filters.q.toLowerCase();
+    if(!item.name.toLowerCase().includes(q) && !item.lage.toLowerCase().includes(q)) return false;
+  }
+  return true;
+}
+
+function render(){
+  const flussItems = DATA.fluss.filter(i => matches(i, true));
+  const seeItems = DATA.see.filter(i => matches(i, false));
+
+  document.getElementById("flussGrid").innerHTML = flussItems.map(cardHTML).join("");
+  document.getElementById("seeGrid").innerHTML = seeItems.map(cardHTML).join("");
+  document.getElementById("flussCount").textContent = `(${flussItems.length})`;
+  document.getElementById("seeCount").textContent = `(${seeItems.length})`;
+
+  document.getElementById("flussSection").style.display = flussItems.length ? "" : "none";
+  document.getElementById("seeSection").style.display = seeItems.length ? "" : "none";
+  document.getElementById("emptyMsg").style.display = (flussItems.length + seeItems.length === 0) ? "" : "none";
+
+  // stats (based on current freigabe state, all gewässer, ignoring filters)
+  const all = [...DATA.fluss, ...DATA.see];
+  const openItems = all.filter(isOpen);
+  document.getElementById("statCount").textContent = all.length;
+  document.getElementById("statOpen").textContent = openItems.length;
+  const totalLen = DATA.fluss.filter(isOpen).reduce((s,i)=>s+i.metric,0);
+  const totalArea = DATA.see.filter(isOpen).reduce((s,i)=>s+i.metric,0);
+  document.getElementById("statLen").textContent = fmt(totalLen);
+  document.getElementById("statArea").textContent = fmt(totalArea);
+
+  document.querySelectorAll('.switch input').forEach(inp=>{
+    inp.addEventListener('change', async (e)=>{
+      const id = e.target.getAttribute('data-id');
+      overrides[id] = e.target.checked;
+      render();
+      await saveOverrides();
+    });
+  });
+}
+
+document.getElementById("typeSeg").addEventListener("click", e=>{
+  if(e.target.tagName !== "BUTTON") return;
+  document.querySelectorAll("#typeSeg button").forEach(b=>b.classList.remove("active"));
+  e.target.classList.add("active");
+  filters.type = e.target.getAttribute("data-type");
+  render();
+});
+document.getElementById("statusSeg").addEventListener("click", e=>{
+  if(e.target.tagName !== "BUTTON") return;
+  document.querySelectorAll("#statusSeg button").forEach(b=>b.classList.remove("active"));
+  e.target.classList.add("active");
+  filters.status = e.target.getAttribute("data-status");
+  render();
+});
+document.getElementById("searchInput").addEventListener("input", e=>{
+  filters.q = e.target.value;
+  render();
+});
+document.getElementById("resetBtn").addEventListener("click", async ()=>{
+  overrides = {};
+  render();
+  await saveOverrides();
+});
+
+const PAGE_META = {
+  register: {
+    title:"Gewässerregister",
+    sub:"Alle Fließ- und Stehgewässer des Vereins auf einen Blick — mit Freigabestatus, Pachtlage und, wo vorhanden, der Fangquote 2025.",
+    showStats:true
+  },
+  besatz: {
+    title:"Besatzempfehlung 2026",
+    sub:"Kurzfassung auf einen Blick — auf Basis der Fangbuchauswertung 2025. Fünf Handlungsgruppen statt Tabelle.",
+    showStats:false
+  },
+  aufzucht: {
+    title:"Vorschlag: Aufzucht Laipersdorf",
+    sub:"Rollierendes Aufzuchtprogramm für die Weiherkette Laipersdorf — Aufteilung, Bewirtschaftung und Ablaufplan.",
+    showStats:false
+  },
+  au: {
+    title:"Vorschlag: Weiherkette Au",
+    sub:"Geordnete Abwicklung des Au-Geländes aus wirtschaftlichen Gründen.",
+    showStats:false
+  },
+  letten: {
+    title:"Vorschlag: Letten",
+    sub:"Freigabe des Letten-Weihers als Ersatz für die entfallenden Au-Gewässer.",
+    showStats:false
+  }
+};
+
+const PAGE_IDS = Object.keys(PAGE_META);
+
+function showPage(page){
+  PAGE_IDS.forEach(id=>{
+    document.getElementById("page-"+id).style.display = (id === page) ? "" : "none";
+  });
+  document.getElementById("statRow").style.display = PAGE_META[page].showStats ? "" : "none";
+  document.getElementById("pageTitle").textContent = PAGE_META[page].title;
+  document.getElementById("pageSub").textContent = PAGE_META[page].sub;
+  document.querySelectorAll("#pageNav button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-page") === page);
+  });
+}
+
+document.getElementById("pageNav").addEventListener("click", e=>{
+  if(e.target.tagName !== "BUTTON") return;
+  showPage(e.target.getAttribute("data-page"));
+});
+
+(async function init(){
+  await loadOverrides();
+  render();
+  showPage("register");
+})();
+</script>
+</body>
+</html>
